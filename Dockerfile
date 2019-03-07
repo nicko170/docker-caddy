@@ -1,7 +1,7 @@
 FROM alpine:latest
 MAINTAINER Nick Pratley <nick@npratley.net>
 
-ENV CADDY_FEATURES="http.git,http.prometheus,http.realip,http.proxy"
+ENV CADDY_FEATURES="dns,dyndns,hook.service,http.authz,http.awses,http.awslambda,http.cache,http.cgi,http.cors,http.datadog,http.expires,http.filebrowser,http.filter,http.forwardproxy,http.geoip,http.git,http.gopkg,http.grpc,http.ipfilter,http.jwt,http.locale,http.login,http.mailout,http.minify,http.nobots,http.prometheus,http.proxyprotocol,http.ratelimit,http.realip,http.reauth,http.restic,http.s3browser,http.supervisor,http.upload,http.webdav,net,supervisor,tls.dns.cloudflare"
 
 COPY files/run.sh /caddy-bootstrap/run.sh
 
