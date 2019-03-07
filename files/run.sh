@@ -1,8 +1,8 @@
 #!/bin/sh
 
 DATADIR="/www"
-PUID=${PUID:-1000}
-PGID=${PGID:-1000}
+PUID=1
+PGID=1
 
 # Create a group for our gid if required
 if ! getent group www-data >/dev/null; then
@@ -37,4 +37,4 @@ echo "$*" >> /www/Caddyfile
 ACME_AGREE=true
 
 # exec caddy as www-data from a clean login shell
-exec su -s /bin/sh -c "exec caddy --agree" - www-data
+exec su -s /bin/sh -c "exec caddy --agree" - root
