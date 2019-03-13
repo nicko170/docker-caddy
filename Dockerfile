@@ -3,7 +3,7 @@ MAINTAINER Nick Pratley <nick@npratley.net>
 
 LABEL caddy_version="0.8.2" architecture="amd64"
 
-RUN apk add --update openssh-client git tar php-fpm
+RUN apk add --update openssh-client git tar curl
 
 RUN mkdir /caddysrc \
 && curl -sL -o /caddysrc/caddy_linux_amd64.tar.gz "https://caddyserver.com/download/linux/amd64?plugins=hook.service,http.forwardproxy,http.git,http.minify,http.prometheus,http.realip,tls.dns.cloudflare&license=personal&telemetry=off" \
