@@ -13,9 +13,6 @@ RUN mkdir /caddysrc \
 && rm -rf /caddysrc \
 && printf "0.0.0.0\nfastcgi / 127.0.0.1:9000 php\nbrowse\nstartup php-fpm" > /etc/Caddyfile
 
-RUN mkdir /srv \
-&& printf "<?php phpinfo(); ?>" > /srv/index.php
-
 EXPOSE 443
 EXPOSE 80
 
