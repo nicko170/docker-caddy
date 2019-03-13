@@ -1,24 +1,33 @@
 FROM alpine:latest
 MAINTAINER Nick Pratley <nick@npratley.net>
 
-ENV CADDY_FEATURES="http.git,http.prometheus,http.realip"
+LABEL caddy_version="0.8.2" architecture="amd64"
 
-COPY files/run.sh /caddy-bootstrap/run.sh
+RUN apk add --update openssh-client git tar php-fpm
 
-RUN apk --update add \
-	curl \
-	openssh-client \
-	git \
-	tar \
-	ca-certificates \
-	shadow \
- && curl --silent --show-error --fail --location \
-      --header "Accept: application/tar+gzip, application/x-gzip, application/octet-stream" -o - \
-      "https://caddyserver.com/download/linux/amd64?plugins=${CADDY_FEATURES}&license=personal&telemetry=off" \
-    | tar --no-same-owner -C /usr/bin/ -xz caddy \
- && chmod 0755 /usr/bin/caddy \
- && mkdir /caddy-bootstrap/pre-run/ \
- && rm -rf /var/cache/apk/*
+# essential php libs
+RUN apk add php-curl php-gd php-zip php-iconv php-sqlite3 php-mysql php-mysqli php-json
 
-WORKDIR /www
-ENTRYPOINT ["/caddy-bootstrap/run.sh"]
+# allow environment variable access.
+RUN echo "clear_env = no" >> /etc/php/php-fpm.conf
+
+RUN mkdir /caddysrc \
+&& curl -sL -o /caddysrc/caddy_linux_amd64.tar.gz "https://caddyserver.com/download/linux/amd64?plugins=hook.service,http.forwardproxy,http.git,http.minify,http.prometheus,http.realip,tls.dns.cloudflare&license=personal&telemetry=off" \
+&& tar -xf /caddysrc/caddy_linux_amd64.tar.gz -C /caddysrc \
+&& mv /caddysrc/caddy /usr/bin/caddy \
+&& chmod 755 /usr/bin/caddy \
+&& rm -rf /caddysrc \
+&& printf "0.0.0.0\nfastcgi / 127.0.0.1:9000 php\nbrowse\nstartup php-fpm" > /etc/Caddyfile
+
+RUN mkdir /srv \
+&& printf "<?php phpinfo(); ?>" > /srv/index.php
+
+EXPOSE 2015
+EXPOSE 443
+EXPOSE 80
+
+WORKDIR /srv
+
+ENTRYPOINT ["/usr/bin/caddy"]
+CMD ["-agree --conf", "/etc/Caddyfile"]
+
