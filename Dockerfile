@@ -11,7 +11,7 @@ RUN mkdir /caddysrc \
 && mv /caddysrc/caddy /usr/bin/caddy \
 && chmod 755 /usr/bin/caddy \
 && rm -rf /caddysrc \
-&& printf "0.0.0.0\nfastcgi / 127.0.0.1:9000 php\nbrowse\nstartup php-fpm" > /etc/Caddyfile
+&& printf "0.0.0.0\nfastcgi / phpfpm:9000 php\nbrowse\nstartup php-fpm" > /etc/Caddyfile
 
 EXPOSE 443
 EXPOSE 80
